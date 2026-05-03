@@ -1,14 +1,14 @@
-# 📚 Rastreador de Lectura — Librería Personal
+# Rastreador de Lectura — Librería Personal
 
 Aplicación web cliente para gestionar tu biblioteca personal. Sin backend, sin cuentas — todo se guarda localmente en tu navegador.
 
-## ✨ Características (estado actual)
+## Características (estado actual)
 
 - **Módulo 1** ✅ — Configuración inicial: nombre de usuario, persistencia local
 - **Módulo 2** ✅ — Gestión de libros: formulario con 20+ campos, portada, saga auto-colección
 - Módulos 3–11 — En desarrollo
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 | Área | Tecnología |
 |------|-----------|
@@ -17,49 +17,7 @@ Aplicación web cliente para gestionar tu biblioteca personal. Sin backend, sin 
 | Config rápida | localStorage |
 | Fuentes | Cormorant Garamond + DM Sans |
 | Despliegue | GitHub Pages |
-
-## 🚀 Despliegue en GitHub Pages
-
-### 1. Preparar el repositorio
-
-```bash
-# Clona o crea tu repositorio en GitHub
-git clone https://github.com/TU_USUARIO/reading-tracker.git
-cd reading-tracker
-
-# Copia todos los archivos del proyecto aquí
-```
-
-### 2. Ajustar la URL base
-
-Edita `vite.config.js` y cambia el nombre del repositorio si es diferente:
-
-```js
-base: '/reading-tracker/',   // ← pon aquí el nombre exacto de tu repo
-```
-
-### 3. Activar GitHub Pages
-
-1. Ve a **Settings → Pages** en tu repositorio de GitHub
-2. En **Source** selecciona **GitHub Actions**
-3. Haz push a la rama `main` — el workflow desplegará automáticamente
-
-### 4. Acceder a la app
-
-```
-https://TU_USUARIO.github.io/reading-tracker/
-```
-
-## 💻 Desarrollo local
-
-```bash
-npm install
-npm run dev
-```
-
-La app estará disponible en `http://localhost:5173/reading-tracker/`
-
-## 🏗️ Estructura del proyecto
+## Estructura del proyecto
 
 ```
 reading-tracker/
@@ -91,7 +49,7 @@ reading-tracker/
 └── package.json
 ```
 
-## 📋 Módulos planificados
+## Módulos planificados
 
 | # | Módulo | Estado |
 |---|--------|--------|
