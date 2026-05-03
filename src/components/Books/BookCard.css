@@ -1,0 +1,259 @@
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+  /* Ancho fijo para grid uniforme */
+  width: 130px;
+}
+
+/* ── Cover ── */
+.book-card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px 8px 8px 4px;
+  overflow: hidden;
+  box-shadow: var(--shadow-book);
+  background: var(--bg-tertiary);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  flex-shrink: 0;
+}
+
+.book-card:hover .book-card-cover {
+  transform: translateY(-4px) rotate(-1deg);
+  box-shadow: 6px 12px 24px rgba(30, 20, 10, 0.25), 3px 5px 8px rgba(30, 20, 10, 0.15);
+}
+
+.book-card-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Fallback (sin portada) ── */
+.book-card-cover-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 10px;
+  gap: 6px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--cat-color) 15%, var(--bg-card)),
+    color-mix(in srgb, var(--cat-color) 8%, var(--bg-secondary))
+  );
+  text-align: center;
+  position: relative;
+}
+
+.book-card-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: color-mix(in srgb, var(--cat-color) 40%, transparent);
+  border-radius: 4px 0 0 4px;
+}
+
+.book-card-fallback-title {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  /* Limitar a 4 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.book-card-fallback-author {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+}
+
+/* ── Category dot ── */
+.book-card-cat-dot {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cat-color);
+  border: 1.5px solid rgba(255,255,255,0.6);
+}
+
+/* ── Progress bar at bottom of cover ── */
+.book-card-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+.book-card-progress-fill {
+  height: 100%;
+  background: var(--cat-color);
+  transition: width var(--transition-slow);
+  min-width: 3px;
+}
+
+/* ── Actions overlay ── */
+.book-card-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.book-card:hover .book-card-actions,
+.book-card:focus-within .book-card-actions {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.book-card-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(15, 10, 5, 0.72);
+  backdrop-filter: blur(4px);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.book-card-action-btn:hover {
+  background: rgba(30, 20, 5, 0.9);
+  transform: scale(1.1);
+}
+
+.book-card-fav {
+  color: rgba(255,255,255,0.5);
+  font-size: 1rem;
+}
+
+.book-card-fav--active {
+  color: var(--accent-gold);
+}
+
+/* ── Dropdown menu ── */
+.book-card-menu-wrapper {
+  position: relative;
+}
+
+.book-card-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  list-style: none;
+  min-width: 170px;
+  overflow: hidden;
+  z-index: 100;
+  animation: menuIn 150ms ease forwards;
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.book-card-menu li button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 0.8375rem;
+  color: var(--text-secondary);
+  text-align: left;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.book-card-menu li button:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.book-card-menu-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 2px 0;
+}
+
+.book-card-menu-section-label {
+  padding: 4px 14px 2px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.book-card-menu-danger {
+  color: #c0392b !important;
+}
+
+.book-card-menu-danger:hover {
+  background: rgba(192, 57, 43, 0.06) !important;
+}
+
+/* ── Info below card ── */
+.book-card-info {
+  padding: 0 2px;
+}
+
+.book-card-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.book-card-author {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
