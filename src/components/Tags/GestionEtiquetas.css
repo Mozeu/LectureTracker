@@ -1,0 +1,236 @@
+.ge-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* ── Header ── */
+.ge-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.ge-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.ge-subtitle {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Grid de tarjetas ── */
+.ge-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* ── Tarjeta ── */
+.ge-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.ge-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+.ge-card-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--et-color, var(--accent-primary));
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--et-color, var(--accent-primary)) 20%, transparent);
+}
+
+.ge-card-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.ge-card-nombre {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ge-card-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  background: var(--bg-tertiary);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+}
+
+.ge-card-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.ge-card-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.ge-card-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.ge-card-btn--danger:hover {
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+}
+
+/* ── Formulario inline ── */
+.ge-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.ge-form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.ge-form-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  margin-top: 1px;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.ge-form-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+.ge-form-input {
+  /* inherits .form-input */
+}
+
+.ge-form-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+/* ── Paleta de colores ── */
+.ge-color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ge-color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.ge-color-swatch:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.ge-color-swatch--active {
+  border-color: var(--text-primary);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.5), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ── Loading / Empty ── */
+.ge-loading {
+  color: var(--text-muted);
+  padding: var(--space-xl);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.ge-empty {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.ge-empty-emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.ge-empty h2 {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  color: var(--text-primary);
+}
+
+.ge-empty p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  max-width: 380px;
+  line-height: 1.6;
+}
+
+/* ── Responsive ── */
+@media (max-width: 540px) {
+  .ge-form-row {
+    flex-direction: column;
+  }
+  .ge-form-actions {
+    width: 100%;
+  }
+  .ge-form-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}

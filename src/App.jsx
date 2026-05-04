@@ -6,6 +6,8 @@ import { WelcomeSetup } from './components/Setup/WelcomeSetup';
 import { Sidebar } from './components/Layout/Sidebar';
 import { Dashboard } from './components/Layout/Dashboard';
 import { Biblioteca } from './components/Books/Biblioteca';
+import { GestionEtiquetas } from './components/Tags/GestionEtiquetas';
+import { GestionColecciones } from './components/Tags/GestionColecciones';
 import { ToastContainer } from './components/UI/Toast';
 import './styles/global.css';
 
@@ -197,7 +199,21 @@ export default function App() {
               />
             )}
 
-            {vista !== 'dashboard' && vista !== 'biblioteca' && (
+            {vista === 'etiquetas' && (
+              <GestionEtiquetas
+                onSuccess={(msg) => success(msg ?? '¡Hecho!')}
+                onError={(msg) => toastError(msg ?? 'Error')}
+              />
+            )}
+
+            {vista === 'colecciones' && (
+              <GestionColecciones
+                onSuccess={(msg) => success(msg ?? '¡Hecho!')}
+                onError={(msg) => toastError(msg ?? 'Error')}
+              />
+            )}
+
+            {!['dashboard', 'biblioteca', 'etiquetas', 'colecciones'].includes(vista) && (
               <div style={{ color: 'var(--text-secondary)', textAlign: 'center', paddingTop: '80px' }}>
                 <p style={{ fontSize: '3rem', marginBottom: '16px' }}>🚧</p>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', marginBottom: '8px' }}>

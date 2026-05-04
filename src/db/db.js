@@ -130,6 +130,95 @@ async function sincronizarSaga(nombreSaga, libroId) {
   }
 }
 
+// ─── Helpers de etiquetas — RF13, RF16 ──────────────────────────────────────
+
+export async function crearEtiqueta({ nombre, color }) {
+  const slug = slugify(nombre);
+  const existe = await db.etiquetas.where('slug').equals(slug).first();
+  if (existe) throw new Error(`Ya existe una etiqueta llamada "${nombre}".`);
+  return db.etiquetas.add({ nombre: nombre.trim(), slug, color, fechaCreacion: new Date().toISOString() });
+}
+
+export async function actualizarEtiqueta(id, { nombre, color }) {
+  const antes = await db.etiquetas.get(id);
+  const slug  = slugify(nombre);
+
+  // Si cambió el nombre, actualizar todos los libros que la tienen — RF16
+  if (antes && antes.nombre !== nombre.trim()) {
+    const librosConEtiqueta = await db.libros
+      .filter((l) => Array.isArray(l.etiquetas) && l.etiquetas.includes(antes.nombre))
+      .toArray();
+    for (const libro of librosConEtiqueta) {
+      const nuevasEtiquetas = libro.etiquetas.map((e) => (e === antes.nombre ? nombre.trim() : e));
+      await db.libros.update(libro.id, { etiquetas: nuevasEtiquetas, fechaActualizacion: new Date().toISOString() });
+    }
+  }
+
+  await db.etiquetas.update(id, { nombre: nombre.trim(), slug, color });
+}
+
+export async function eliminarEtiqueta(id) {
+  const etiqueta = await db.etiquetas.get(id);
+  if (!etiqueta) return;
+
+  // RF16: eliminar de todos los libros que la tienen
+  const libros = await db.libros
+    .filter((l) => Array.isArray(l.etiquetas) && l.etiquetas.includes(etiqueta.nombre))
+    .toArray();
+  for (const libro of libros) {
+    await db.libros.update(libro.id, {
+      etiquetas: libro.etiquetas.filter((e) => e !== etiqueta.nombre),
+      fechaActualizacion: new Date().toISOString(),
+    });
+  }
+
+  await db.etiquetas.delete(id);
+}
+
+// ─── Helpers de colecciones manuales — RF14, RF16 ───────────────────────────
+
+export async function crearColeccion({ nombre }) {
+  const slug = slugify(nombre);
+  const existe = await db.colecciones.where('slug').equals(slug).first();
+  if (existe) throw new Error(`Ya existe una colección llamada "${nombre}".`);
+  return db.colecciones.add({
+    nombre: nombre.trim(),
+    slug,
+    librosIds: [],
+    esSaga: false,
+    fechaCreacion: new Date().toISOString(),
+  });
+}
+
+export async function actualizarColeccion(id, cambios) {
+  const patch = { ...cambios };
+  if (cambios.nombre) {
+    patch.nombre = cambios.nombre.trim();
+    patch.slug   = slugify(cambios.nombre.trim());
+  }
+  await db.colecciones.update(id, patch);
+}
+
+export async function eliminarColeccion(id) {
+  // RF16: solo borra la colección, los libros quedan intactos
+  await db.colecciones.delete(id);
+}
+
+export async function agregarLibroAColeccion(coleccionId, libroId) {
+  const col = await db.colecciones.get(coleccionId);
+  if (!col) return;
+  const librosIds = [...new Set([...(col.librosIds ?? []), libroId])];
+  await db.colecciones.update(coleccionId, { librosIds });
+}
+
+export async function quitarLibroDeColeccion(coleccionId, libroId) {
+  const col = await db.colecciones.get(coleccionId);
+  if (!col) return;
+  await db.colecciones.update(coleccionId, {
+    librosIds: (col.librosIds ?? []).filter((id) => id !== libroId),
+  });
+}
+
 // ─── Utilidades ─────────────────────────────────────────────────────────────
 
 export function slugify(texto) {
