@@ -213,6 +213,8 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
           onEliminar={(l) => { setLibroDetalle(null); handleSolicitarEliminar(l); }}
           onToggleFavorito={async (l) => { await handleToggleFavorito(l); setLibroDetalle((prev) => ({ ...prev, favorito: !prev.favorito })); }}
           onCambiarCategoria={(l, cat) => { handleCambiarCategoria(l, cat); }}
+          onSuccess={onSuccess}
+          onError={onError}
         />
       )}
 

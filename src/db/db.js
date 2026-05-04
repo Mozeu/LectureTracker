@@ -130,6 +130,58 @@ async function sincronizarSaga(nombreSaga, libroId) {
   }
 }
 
+// ─── Helpers de progreso — RF20, RF21 ───────────────────────────────────────
+
+/**
+ * Actualiza el progreso de un libro y registra fechaUltimaLectura.
+ * Si el progreso llega a 100%, mueve automáticamente a "terminados" (RF21).
+ * Retorna { autoTerminado: bool } para que la UI pueda reaccionar.
+ */
+export async function actualizarProgreso(id, { formatoProgreso, progresoPaginas, progresoPorc, progresoEpisodio, progresoTiempo, totalPaginas }) {
+  const ahora   = new Date().toISOString();
+  const hoy     = ahora.split('T')[0];
+  const libro   = await db.libros.get(id);
+  if (!libro) throw new Error('Libro no encontrado.');
+
+  // Calcular porcentaje canónico
+  let porc = libro.progresoPorc ?? 0;
+  if (formatoProgreso === 'paginas' && progresoPaginas != null && totalPaginas) {
+    porc = Math.min(100, Math.round((Number(progresoPaginas) / Number(totalPaginas)) * 100));
+  } else if (formatoProgreso === 'porcentaje' && progresoPorc != null) {
+    porc = Math.min(100, Number(progresoPorc));
+  }
+
+  const patch = {
+    formatoProgreso,
+    progresoPaginas: progresoPaginas != null ? Number(progresoPaginas) : libro.progresoPaginas,
+    progresoPorc:    porc,
+    progresoEpisodio: progresoEpisodio ?? libro.progresoEpisodio,
+    progresoTiempo:   progresoTiempo   ?? libro.progresoTiempo,
+    fechaUltimaLectura: hoy,
+    fechaActualizacion: ahora,
+  };
+
+  // RF21: si llega a 100% y aún no está terminado → marcar como terminado
+  let autoTerminado = false;
+  if (porc >= 100 && libro.categoria !== 'terminados') {
+    patch.categoria = 'terminados';
+    patch.fechaFin  = patch.fechaFin ?? hoy;
+    if (totalPaginas) patch.progresoPaginas = Number(totalPaginas);
+    autoTerminado = true;
+  }
+
+  // Registrar fechaInicio si era el primer avance real
+  if (!libro.fechaInicio && (progresoPaginas > 0 || porc > 0)) {
+    patch.fechaInicio = hoy;
+    if (libro.categoria === 'leer-mas-tarde' || libro.categoria === 'lista-de-deseos') {
+      patch.categoria = 'en-progreso';
+    }
+  }
+
+  await db.libros.update(id, patch);
+  return { autoTerminado };
+}
+
 // ─── Helpers de notas — RF17, RF18, RF19 ────────────────────────────────────
 
 export async function crearNota({ libroId, pagina, fecha, texto, textoPlano }) {

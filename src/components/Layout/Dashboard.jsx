@@ -185,6 +185,8 @@ export function Dashboard({ nombreUsuario, onAddBook, onIrBiblioteca }) {
           onEliminar={(l) => { setLibroDetalle(null); handleSolicitarEliminar(l); }}
           onToggleFavorito={async (l) => { await handleToggleFavorito(l); setLibroDetalle((p) => ({ ...p, favorito: !p.favorito })); }}
           onCambiarCategoria={handleCambiarCategoria}
+          onSuccess={(msg) => onAddBook?.(null, msg)}
+          onError={(msg) => onAddBook?.(null, msg)}
         />
       )}
 
