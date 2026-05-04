@@ -1,0 +1,131 @@
+.panel-notas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── Cabecera ── */
+.panel-notas-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.panel-notas-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.panel-notas-title {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.panel-notas-count {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+}
+
+.panel-notas-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Lista ── */
+.panel-notas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Empty ── */
+.panel-notas-empty {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
+}
+
+.panel-notas-empty p:first-child {
+  font-size: 2rem;
+}
+
+.panel-notas-loading {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  padding: var(--space-md);
+}
+
+/* ── Formulario de nota ── */
+.form-nota {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  animation: formIn 200ms ease forwards;
+}
+
+@keyframes formIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-nota-meta {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.form-nota-pagina {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.form-nota-fecha {
+  flex: 1;
+}
+
+.form-nota-editor {
+  /* RichEditor maneja su propio border/focus */
+}
+
+.form-nota-error {
+  margin-top: -4px;
+}
+
+.form-nota-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .form-nota-meta {
+    flex-direction: column;
+  }
+
+  .form-nota-pagina {
+    width: 100%;
+  }
+}

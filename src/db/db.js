@@ -130,6 +130,48 @@ async function sincronizarSaga(nombreSaga, libroId) {
   }
 }
 
+// ─── Helpers de notas — RF17, RF18, RF19 ────────────────────────────────────
+
+export async function crearNota({ libroId, pagina, fecha, texto, textoPlano }) {
+  const ahora = new Date().toISOString();
+  return db.notas.add({
+    libroId,
+    pagina:     pagina  ? Number(pagina)  : null,
+    fecha:      fecha   ? fecha           : ahora.split('T')[0],
+    texto,       // HTML de Quill
+    textoPlano,  // texto sin formato para búsquedas
+    fechaCreacion:     ahora,
+    fechaActualizacion: ahora,
+  });
+}
+
+export async function actualizarNota(id, { pagina, fecha, texto, textoPlano }) {
+  await db.notas.update(id, {
+    pagina:     pagina ? Number(pagina) : null,
+    fecha,
+    texto,
+    textoPlano,
+    fechaActualizacion: new Date().toISOString(),
+  });
+}
+
+export async function eliminarNota(id) {
+  await db.notas.delete(id);
+}
+
+// RF18: notas de un libro ordenadas por página (nulls al final) y luego fecha
+export async function getNotasDeLibro(libroId) {
+  const notas = await db.notas.where('libroId').equals(libroId).toArray();
+  return notas.sort((a, b) => {
+    // Primero por página (null al final)
+    if (a.pagina !== null && b.pagina !== null) return a.pagina - b.pagina;
+    if (a.pagina !== null) return -1;
+    if (b.pagina !== null) return 1;
+    // Luego por fecha
+    return new Date(a.fecha) - new Date(b.fecha);
+  });
+}
+
 // ─── Helpers de etiquetas — RF13, RF16 ──────────────────────────────────────
 
 export async function crearEtiqueta({ nombre, color }) {

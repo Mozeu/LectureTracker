@@ -1,0 +1,124 @@
+.nota-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+  position: relative;
+}
+
+.nota-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+/* ── Meta (página / fecha) ── */
+.nota-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.nota-card-pagina,
+.nota-card-fecha {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.nota-card-pagina {
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  color: var(--accent-primary);
+}
+
+.nota-card-fecha {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+/* ── Contenido renderizado ── */
+/* Usamos .ql-editor para heredar los estilos de Quill sin el wrapper */
+.nota-card-contenido.ql-editor {
+  padding: 0;
+  min-height: unset;
+  max-height: unset;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  border: none;
+  background: none;
+  cursor: default;
+}
+
+.nota-card-contenido.ql-editor p:last-child {
+  margin-bottom: 0;
+}
+
+.nota-card-contenido.ql-editor blockquote {
+  border-left: 3px solid var(--accent-primary);
+  padding-left: 12px;
+  margin: 8px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ── Acciones ── */
+.nota-card-actions {
+  display: flex;
+  gap: var(--space-sm);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.nota-card:hover .nota-card-actions {
+  opacity: 1;
+}
+
+.nota-card-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nota-card-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.nota-card-btn--danger:hover {
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+}
+
+/* ── Confirmación inline ── */
+.nota-card-confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  padding: var(--space-sm) 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.nota-card-confirm span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  flex: 1;
+}

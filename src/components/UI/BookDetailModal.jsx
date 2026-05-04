@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { CATEGORIAS } from '../Books/BookForm';
+import { PanelNotas } from '../Notes/PanelNotas';
 import './BookDetailModal.css';
 
 /**
@@ -216,13 +217,13 @@ export function BookDetailModal({ libro, onCerrar, onEditar, onEliminar, onToggl
           </div>
         )}
 
-        {/* ── Notas rápidas ── */}
-        {libro.notas && (
-          <div className="detail-section">
-            <h3 className="detail-section-title">Notas</h3>
-            <p className="detail-descripcion">{libro.notas}</p>
-          </div>
-        )}
+        {/* ── Notas enriquecidas — RF17, RF18, RF19 ── */}
+        <div className="detail-section">
+          <PanelNotas
+            libroId={libro.id}
+            totalPaginas={libro.totalPaginas ?? null}
+          />
+        </div>
       </div>
     </div>
   );
