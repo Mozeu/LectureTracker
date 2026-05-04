@@ -257,3 +257,58 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ── CTA buttons ── */
+.book-card-cta {
+  width: 100%;
+  padding: 5px 0;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-align: center;
+  transition: all var(--transition-fast);
+  opacity: 0;
+  transform: translateY(4px);
+  font-family: var(--font-body);
+}
+
+.book-card:hover .book-card-cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.book-card-cta--start {
+  background: color-mix(in srgb, var(--cat-progress) 15%, transparent);
+  color: var(--cat-progress);
+  border: 1px solid color-mix(in srgb, var(--cat-progress) 30%, transparent);
+  cursor: pointer;
+}
+
+.book-card-cta--start:hover {
+  background: var(--cat-progress);
+  color: white;
+  border-color: var(--cat-progress);
+}
+
+.book-card-cta--finish {
+  background: color-mix(in srgb, var(--cat-finished) 15%, transparent);
+  color: var(--cat-finished);
+  border: 1px solid color-mix(in srgb, var(--cat-finished) 30%, transparent);
+  cursor: pointer;
+}
+
+.book-card-cta--finish:hover {
+  background: var(--cat-finished);
+  color: white;
+  border-color: var(--cat-finished);
+}
+
+.book-card-cta--done {
+  color: var(--cat-finished);
+  font-size: 0.68rem;
+  opacity: 0.7;
+  border: none;
+  background: none;
+  padding-top: 3px;
+}

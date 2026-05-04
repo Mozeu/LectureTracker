@@ -20,6 +20,7 @@ export default function App() {
   const [estado, setEstado]             = useState(ESTADO.CARGANDO);
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [vista, setVista]               = useState('dashboard');
+  const [filtro, setFiltro]             = useState(null); // filtro activo en Biblioteca
   const [sidebarOpen, setSidebarOpen]   = useState(false);
 
   const { theme, toggleTheme } = useTheme();
@@ -67,7 +68,17 @@ export default function App() {
     success(mensaje ?? '¡Libro añadido!');
   }, [success]);
 
-  /* ── Cambiar nombre (RF2) ── */
+  /* ── Navegar a Biblioteca con filtro opcional ── */
+  const navegarBiblioteca = useCallback((f = null) => {
+    setFiltro(f);
+    setVista('biblioteca');
+  }, []);
+
+  /* ── Navegar genérico desde sidebar ── */
+  const handleNavegar = useCallback((v, f = null) => {
+    setFiltro(v === 'biblioteca' ? f : null);
+    setVista(v);
+  }, []);
   const handleCambiarNombre = useCallback(async (nuevoNombre) => {
     try {
       await setConfig('nombreUsuario', nuevoNombre);
@@ -141,7 +152,8 @@ export default function App() {
         {/* Sidebar */}
         <Sidebar
           vista={vista}
-          onNavegar={setVista}
+          filtro={filtro}
+          onNavegar={handleNavegar}
           nombreUsuario={nombreUsuario}
           theme={theme}
           onToggleTheme={toggleTheme}
@@ -172,12 +184,14 @@ export default function App() {
               <Dashboard
                 nombreUsuario={nombreUsuario}
                 onAddBook={handleAddBook}
-                onIrBiblioteca={() => setVista('biblioteca')}
+                onIrBiblioteca={() => navegarBiblioteca()}
               />
             )}
 
             {vista === 'biblioteca' && (
               <Biblioteca
+                key={filtro ?? 'todas'}
+                filtroInicial={filtro ?? 'todas'}
                 onSuccess={(msg) => success(msg ?? '¡Hecho!')}
                 onError={(msg) => toastError(msg ?? 'Error')}
               />

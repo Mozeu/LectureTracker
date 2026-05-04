@@ -9,11 +9,14 @@ import { useLibroActions } from '../../hooks/useLibroActions';
 import './Biblioteca.css';
 
 /**
- * Biblioteca — Módulo 3 (RF7, RF8, RF9)
+ * Biblioteca — Módulo 3 (RF7, RF8, RF9) + Módulo 4 (RF10, RF11)
+ * filtroInicial: 'todas' | 'favoritos' | categoría value — viene del sidebar
  */
-export function Biblioteca({ onSuccess, onError }) {
-  const [filtroCategoria, setFiltroCategoria] = useState('todas');
-  const [filtroFavoritos, setFiltroFavoritos] = useState(false);
+export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
+  const [filtroCategoria, setFiltroCategoria] = useState(
+    filtroInicial === 'favoritos' ? 'todas' : (filtroInicial ?? 'todas')
+  );
+  const [filtroFavoritos, setFiltroFavoritos] = useState(filtroInicial === 'favoritos');
   const [filtroEtiqueta, setFiltroEtiqueta]   = useState('');
   const [busqueda, setBusqueda]               = useState('');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -83,11 +86,19 @@ export function Biblioteca({ onSuccess, onError }) {
       {/* ── Cabecera ── */}
       <div className="biblioteca-header">
         <div>
-          <h1 className="biblioteca-title">Mi Biblioteca</h1>
+          <h1 className="biblioteca-title">
+            {filtroFavoritos
+              ? '★ Favoritos'
+              : filtroCategoria !== 'todas'
+                ? `${CATEGORIAS.find((c) => c.value === filtroCategoria)?.emoji} ${CATEGORIAS.find((c) => c.value === filtroCategoria)?.label}`
+                : 'Mi Biblioteca'}
+          </h1>
           <p className="biblioteca-subtitle">
-            {libros.length === 0
-              ? 'Aún no has añadido libros.'
-              : `${libros.length} ${libros.length === 1 ? 'libro' : 'libros'} en tu colección`}
+            {librosFiltrados.length === 0 && libros.length > 0
+              ? 'Sin libros en esta sección.'
+              : libros.length === 0
+                ? 'Aún no has añadido libros.'
+                : `${librosFiltrados.length} ${librosFiltrados.length === 1 ? 'libro' : 'libros'}${filtroCategoria !== 'todas' || filtroFavoritos ? '' : ' en tu colección'}`}
           </p>
         </div>
         <button className="btn btn-primary" onClick={() => setMostrarFormulario(true)}>

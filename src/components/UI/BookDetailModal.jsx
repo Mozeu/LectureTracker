@@ -99,7 +99,25 @@ export function BookDetailModal({ libro, onCerrar, onEditar, onEliminar, onToggl
 
             {/* Acciones principales */}
             <div className="detail-actions">
-              <button className="btn btn-primary btn-sm" onClick={() => onEditar?.(libro)}>
+              {/* RF12: Empezar a leer */}
+              {(libro.categoria === 'leer-mas-tarde' || libro.categoria === 'lista-de-deseos') && (
+                <button
+                  className="btn btn-primary btn-sm detail-action-cta"
+                  onClick={() => { onCambiarCategoria?.(libro, 'en-progreso'); onCerrar?.(); }}
+                >
+                  ▶ Empezar a leer
+                </button>
+              )}
+              {/* RF21: Marcar terminado */}
+              {libro.categoria === 'en-progreso' && (
+                <button
+                  className="btn btn-sm detail-action-cta detail-action-finish"
+                  onClick={() => { onCambiarCategoria?.(libro, 'terminados'); onCerrar?.(); }}
+                >
+                  ✓ Marcar como terminado
+                </button>
+              )}
+              <button className="btn btn-secondary btn-sm" onClick={() => onEditar?.(libro)}>
                 ✏️ Editar
               </button>
               <button

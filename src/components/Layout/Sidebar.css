@@ -115,7 +115,104 @@
   text-align: center;
 }
 
-/* ── Footer ── */
+.sidebar-nav-label {
+  flex: 1;
+  text-align: left;
+}
+
+.sidebar-nav-badge {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ── Sub-group (categorías) ── */
+.sidebar-sub-group {
+  display: flex;
+  flex-direction: column;
+  margin: 0 var(--space-sm);
+  border-left: 1px solid var(--border-light);
+  padding-left: 4px;
+  margin-left: 28px;
+}
+
+.sidebar-sub-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  font-size: 0.8375rem;
+  color: var(--text-muted);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  position: relative;
+}
+
+.sidebar-sub-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.sidebar-sub-item--active {
+  color: var(--sub-color, var(--accent-primary));
+  background: color-mix(in srgb, var(--sub-color, var(--accent-primary)) 8%, transparent);
+  font-weight: 500;
+}
+
+.sidebar-sub-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sub-color, var(--text-muted));
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.sidebar-sub-item--active .sidebar-sub-dot,
+.sidebar-sub-item:hover .sidebar-sub-dot {
+  opacity: 1;
+}
+
+.sidebar-sub-emoji {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.sidebar-sub-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-sub-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* ── Divider ── */
+.sidebar-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: var(--space-sm) var(--space-md);
+}
 .sidebar-footer {
   padding: var(--space-md);
   border-top: 1px solid var(--border-light);

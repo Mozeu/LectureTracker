@@ -191,6 +191,25 @@
   border-color: rgba(192, 57, 43, 0.5);
 }
 
+/* RF12 / RF21 — CTA primaria de acción de lectura */
+.detail-action-cta {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.detail-action-finish {
+  background: color-mix(in srgb, var(--cat-finished) 12%, transparent);
+  color: var(--cat-finished);
+  border: 1.5px solid color-mix(in srgb, var(--cat-finished) 35%, transparent);
+}
+
+.detail-action-finish:hover {
+  background: var(--cat-finished);
+  color: white;
+  border-color: var(--cat-finished);
+  box-shadow: var(--shadow-sm);
+}
+
 /* ── Sections ── */
 .detail-section {
   padding: var(--space-lg) var(--space-xl);

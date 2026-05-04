@@ -146,6 +146,31 @@ export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFa
           <p className="book-card-author">{primerAutor(libro.autores)}</p>
         )}
       </div>
+
+      {/* ── CTA rápida según categoría — RF12, RF21 ── */}
+      {libro.categoria === 'leer-mas-tarde' || libro.categoria === 'lista-de-deseos' ? (
+        <button
+          className="book-card-cta book-card-cta--start"
+          onClick={(e) => { e.stopPropagation(); onCambiarCategoria?.(libro, 'en-progreso'); }}
+          title="Empezar a leer"
+          aria-label="Empezar a leer este libro"
+        >
+          ▶ Empezar
+        </button>
+      ) : libro.categoria === 'en-progreso' ? (
+        <button
+          className="book-card-cta book-card-cta--finish"
+          onClick={(e) => { e.stopPropagation(); onCambiarCategoria?.(libro, 'terminados'); }}
+          title="Marcar como terminado"
+          aria-label="Marcar como terminado"
+        >
+          ✓ Terminado
+        </button>
+      ) : libro.categoria === 'terminados' ? (
+        <div className="book-card-cta book-card-cta--done" aria-label="Libro terminado">
+          ✓ Leído
+        </div>
+      ) : null}
     </div>
   );
 }
