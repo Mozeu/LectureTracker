@@ -1,0 +1,100 @@
+.selection-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 12px var(--space-lg);
+  box-shadow: var(--shadow-md);
+  animation: barSlideIn 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes barSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.selection-bar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* Checkbox visual */
+.selection-bar-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.selection-bar-check-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.selection-bar-check:hover .selection-bar-check-box {
+  border-color: var(--accent-primary);
+}
+
+.selection-bar-check-box--some::after {
+  content: '';
+  width: 10px;
+  height: 2px;
+  background: var(--accent-primary);
+  border-radius: 1px;
+}
+
+.selection-bar-check-box--all {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.selection-bar-check-box--all::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(45deg) translate(-1px, -1px);
+  margin-top: -2px;
+}
+
+.selection-bar-count {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.selection-bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 480px) {
+  .selection-bar {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: 10px var(--space-md);
+  }
+
+  .selection-bar-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

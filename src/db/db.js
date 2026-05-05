@@ -110,6 +110,56 @@ export async function eliminarLibro(id) {
   });
 }
 
+/**
+ * Returns note count + affected collection names for a book,
+ * so the confirmation dialog can show meaningful impact — RF22.
+ */
+export async function getDeleteImpact(id) {
+  const [noteCount, collections] = await Promise.all([
+    db.notas.where('libroId').equals(id).count(),
+    db.colecciones.filter((c) => c.librosIds?.includes(id)).toArray(),
+  ]);
+  return {
+    noteCount,
+    collectionNames: collections.map((c) => c.nombre),
+  };
+}
+
+/**
+ * Bulk delete — RF22, RF23.
+ * Deletes all notes and unlinks from collections for every id in the array.
+ * Returns total counts for the success toast.
+ */
+export async function deleteBooksInBulk(ids) {
+  if (!ids.length) return { deleted: 0, notesDeleted: 0 };
+
+  let notesDeleted = 0;
+
+  await db.transaction('rw', db.libros, db.notas, db.colecciones, async () => {
+    // Delete notes for all books in one pass
+    for (const id of ids) {
+      const n = await db.notas.where('libroId').equals(id).count();
+      notesDeleted += n;
+      await db.notas.where('libroId').equals(id).delete();
+    }
+
+    // Unlink from collections — RF23
+    const allCollections = await db.colecciones.toArray();
+    for (const col of allCollections) {
+      const before = col.librosIds?.length ?? 0;
+      const after  = (col.librosIds ?? []).filter((lid) => !ids.includes(lid));
+      if (after.length !== before) {
+        await db.colecciones.update(col.id, { librosIds: after });
+      }
+    }
+
+    // Delete the books
+    await db.libros.bulkDelete(ids);
+  });
+
+  return { deleted: ids.length, notesDeleted };
+}
+
 // ─── Helpers de colecciones (sagas) ─────────────────────────────────────────
 
 async function sincronizarSaga(nombreSaga, libroId) {

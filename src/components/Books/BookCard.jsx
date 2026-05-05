@@ -7,7 +7,7 @@ import './BookCard.css';
  * Muestra portada (o título como fallback).
  * Hover: acciones rápidas (detalle, editar, cambiar categoría, eliminar, favorito).
  */
-export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFavorito, onCambiarCategoria }) {
+export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFavorito, onCambiarCategoria, selectionMode = false, isSelected = false, onToggleSelect }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const menuRef = useRef(null);
 
@@ -29,19 +29,31 @@ export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFa
 
   return (
     <div
-      className="book-card"
+      className={`book-card ${selectionMode ? 'book-card--selectable' : ''} ${isSelected ? 'book-card--selected' : ''}`}
       style={{ '--cat-color': categoria?.color ?? 'var(--accent-primary)' }}
       role="article"
-      aria-label={`${libro.titulo}${libro.autores ? ` de ${libro.autores}` : ''}`}
+      aria-label={`${libro.titulo}${libro.autores ? ` de ${libro.autores}` : ''}${isSelected ? ' — seleccionado' : ''}`}
     >
+      {/* ── Checkbox overlay (selection mode) ── */}
+      {selectionMode && (
+        <button
+          className="book-card-select-btn"
+          onClick={() => onToggleSelect?.(libro.id)}
+          aria-label={isSelected ? `Deseleccionar ${libro.titulo}` : `Seleccionar ${libro.titulo}`}
+          aria-pressed={isSelected}
+        >
+          <span className={`book-card-select-check ${isSelected ? 'book-card-select-check--active' : ''}`} aria-hidden="true" />
+        </button>
+      )}
+
       {/* ── Portada o fallback ── */}
       <div
         className="book-card-cover"
-        onClick={() => onVerDetalle?.(libro)}
+        onClick={() => selectionMode ? onToggleSelect?.(libro.id) : onVerDetalle?.(libro)}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && onVerDetalle?.(libro)}
-        aria-label={`Ver detalles de ${libro.titulo}`}
+        onKeyDown={(e) => e.key === 'Enter' && (selectionMode ? onToggleSelect?.(libro.id) : onVerDetalle?.(libro))}
+        aria-label={selectionMode ? `Seleccionar ${libro.titulo}` : `Ver detalles de ${libro.titulo}`}
       >
         {portada ? (
           <img
@@ -77,8 +89,9 @@ export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFa
         <div className="book-card-cat-dot" title={categoria?.label} aria-label={`Categoría: ${categoria?.label}`} />
       </div>
 
-      {/* ── Acciones overlay (hover) ── */}
-      <div className="book-card-actions" role="toolbar" aria-label="Acciones del libro">
+      {/* ── Acciones overlay (hover) — hidden in selection mode ── */}
+      {!selectionMode && (
+        <div className="book-card-actions" role="toolbar" aria-label="Acciones del libro">
         {/* Favorito */}
         <button
           className={`book-card-action-btn book-card-fav ${libro.favorito ? 'book-card-fav--active' : ''}`}
@@ -138,17 +151,22 @@ export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFa
           )}
         </div>
       </div>
+      )}
 
       {/* ── Info básica debajo ── */}
-      <div className="book-card-info" onClick={() => onVerDetalle?.(libro)}>
+      <div
+        className="book-card-info"
+        onClick={() => !selectionMode && onVerDetalle?.(libro)}
+        style={{ cursor: selectionMode ? 'default' : 'pointer' }}
+      >
         <p className="book-card-title" title={libro.titulo}>{libro.titulo}</p>
         {libro.autores && (
           <p className="book-card-author">{primerAutor(libro.autores)}</p>
         )}
       </div>
 
-      {/* ── CTA rápida según categoría — RF12, RF21 ── */}
-      {libro.categoria === 'leer-mas-tarde' || libro.categoria === 'lista-de-deseos' ? (
+      {/* ── CTA rápida — hidden in selection mode ── */}
+      {!selectionMode && (libro.categoria === 'leer-mas-tarde' || libro.categoria === 'lista-de-deseos' ? (
         <button
           className="book-card-cta book-card-cta--start"
           onClick={(e) => { e.stopPropagation(); onCambiarCategoria?.(libro, 'en-progreso'); }}
@@ -170,7 +188,7 @@ export function BookCard({ libro, onVerDetalle, onEditar, onEliminar, onToggleFa
         <div className="book-card-cta book-card-cta--done" aria-label="Libro terminado">
           ✓ Leído
         </div>
-      ) : null}
+      ) : null)}
     </div>
   );
 }

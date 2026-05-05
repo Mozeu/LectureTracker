@@ -1,28 +1,34 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import db from '../../db/db';
 import { BookCard } from '../Books/BookCard';
 import { BookForm, CATEGORIAS } from '../Books/BookForm';
-import { ConfirmDialog } from '../UI/ConfirmDialog';
+import { DeleteConfirmDialog } from '../UI/DeleteConfirmDialog';
 import { BookDetailModal } from '../UI/BookDetailModal';
 import { useLibroActions } from '../../hooks/useLibroActions';
 import './Biblioteca.css';
 
 /**
- * Biblioteca — Módulo 3 (RF7, RF8, RF9) + Módulo 4 (RF10, RF11)
- * filtroInicial: 'todas' | 'favoritos' | categoría value — viene del sidebar
+ * Biblioteca — RF7, RF8, RF9, RF10, RF11, RF22, RF23
+ * filtroInicial: 'todas' | 'favoritos' | category value
  */
 export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
   const [filtroCategoria, setFiltroCategoria] = useState(
     filtroInicial === 'favoritos' ? 'todas' : (filtroInicial ?? 'todas')
   );
   const [filtroFavoritos, setFiltroFavoritos] = useState(filtroInicial === 'favoritos');
-  const [filtroEtiqueta, setFiltroEtiqueta]   = useState('');
-  const [busqueda, setBusqueda]               = useState('');
+  const [filtroEtiqueta,  setFiltroEtiqueta]  = useState('');
+  const [busqueda,        setBusqueda]        = useState('');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
-  /* ── Datos reactivos ── */
-  const libros = useLiveQuery(() => db.libros.orderBy('fechaCreacion').reverse().toArray(), []);
+  // Selection state — RF22 bulk delete
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds,   setSelectedIds]   = useState(new Set());
+
+  /* ── Live data ── */
+  const libros = useLiveQuery(
+    () => db.libros.orderBy('fechaCreacion').reverse().toArray(), []
+  );
   const etiquetasDisponibles = useMemo(() => {
     if (!libros) return [];
     const set = new Set();
@@ -30,15 +36,16 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
     return [...set].sort();
   }, [libros]);
 
-  /* ── Acciones compartidas ── */
+  /* ── Actions ── */
   const {
-    libroParaEliminar, libroDetalle, libroEditar,
+    libroParaEliminar, bulkIdsToDelete, libroDetalle, libroEditar,
     setLibroDetalle, setLibroEditar,
     handleToggleFavorito, handleCambiarCategoria,
     handleSolicitarEliminar, handleConfirmarEliminar, handleCancelarEliminar,
+    handleSolicitarBulkDelete, handleConfirmarBulkDelete, handleCancelarBulkDelete,
   } = useLibroActions({ onSuccess, onError });
 
-  /* ── Filtrado — RF8 ── */
+  /* ── Filtering — RF8 ── */
   const librosFiltrados = useMemo(() => {
     if (!libros) return [];
     return libros.filter((l) => {
@@ -47,28 +54,51 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
       if (filtroEtiqueta && !l.etiquetas?.includes(filtroEtiqueta)) return false;
       if (busqueda) {
         const q = busqueda.toLowerCase();
-        const enTitulo  = l.titulo?.toLowerCase().includes(q);
-        const enAutores = l.autores?.toLowerCase().includes(q);
-        const enSaga    = l.saga?.toLowerCase().includes(q);
-        if (!enTitulo && !enAutores && !enSaga) return false;
+        if (!l.titulo?.toLowerCase().includes(q) &&
+            !l.autores?.toLowerCase().includes(q) &&
+            !l.saga?.toLowerCase().includes(q)) return false;
       }
       return true;
     });
   }, [libros, filtroCategoria, filtroFavoritos, filtroEtiqueta, busqueda]);
 
-  /* ── Éxito al añadir/editar libro ── */
+  /* ── Selection helpers ── */
+  const toggleSelect = useCallback((id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
+
+  const selectAll = useCallback(() => {
+    setSelectedIds(new Set(librosFiltrados.map((l) => l.id)));
+  }, [librosFiltrados]);
+
+  const clearSelection = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
+  const exitSelectionMode = useCallback(() => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+  }, []);
+
+  const enterSelectionMode = useCallback(() => {
+    setSelectionMode(true);
+    setSelectedIds(new Set());
+  }, []);
+
   const handleFormSuccess = (libroId, mensaje) => {
     setMostrarFormulario(false);
     setLibroEditar(null);
     onSuccess?.(mensaje);
   };
 
-  /* ── Loading ── */
   if (libros === undefined) {
     return <div className="biblioteca-loading">Cargando biblioteca…</div>;
   }
 
-  /* ── Formulario de edición / creación ── */
   if (mostrarFormulario || libroEditar) {
     return (
       <div className="biblioteca-form-wrap">
@@ -81,9 +111,12 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
     );
   }
 
+  const selectedCount = selectedIds.size;
+  const allSelected   = librosFiltrados.length > 0 && selectedCount === librosFiltrados.length;
+
   return (
     <div className="biblioteca">
-      {/* ── Cabecera ── */}
+      {/* ── Header ── */}
       <div className="biblioteca-header">
         <div>
           <h1 className="biblioteca-title">
@@ -101,17 +134,57 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
                 : `${librosFiltrados.length} ${librosFiltrados.length === 1 ? 'libro' : 'libros'}${filtroCategoria !== 'todas' || filtroFavoritos ? '' : ' en tu colección'}`}
           </p>
         </div>
-        <button className="btn btn-primary" onClick={() => setMostrarFormulario(true)}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-          Añadir libro
-        </button>
+        <div className="biblioteca-header-actions">
+          {!selectionMode && libros.length > 0 && (
+            <button className="btn btn-secondary btn-sm" onClick={enterSelectionMode}>
+              ☑ Seleccionar
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={() => setMostrarFormulario(true)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Añadir libro
+          </button>
+        </div>
       </div>
 
-      {/* ── Filtros — RF8 ── */}
+      {/* ── Bulk selection toolbar — RF22 ── */}
+      {selectionMode && (
+        <div className="biblioteca-bulk-bar" role="toolbar" aria-label="Barra de selección">
+          <div className="biblioteca-bulk-left">
+            <input
+              type="checkbox"
+              id="select-all"
+              className="biblioteca-bulk-checkbox"
+              checked={allSelected}
+              onChange={allSelected ? clearSelection : selectAll}
+              aria-label={allSelected ? 'Deseleccionar todos' : 'Seleccionar todos'}
+            />
+            <label htmlFor="select-all" className="biblioteca-bulk-label">
+              {selectedCount === 0
+                ? 'Ninguno seleccionado'
+                : `${selectedCount} ${selectedCount === 1 ? 'libro' : 'libros'} seleccionado${selectedCount !== 1 ? 's' : ''}`}
+            </label>
+          </div>
+          <div className="biblioteca-bulk-right">
+            {selectedCount > 0 && (
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => handleSolicitarBulkDelete([...selectedIds])}
+              >
+                🗑 Eliminar {selectedCount}
+              </button>
+            )}
+            <button className="btn btn-secondary btn-sm" onClick={exitSelectionMode}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Filters — RF8 ── */}
       <div className="biblioteca-filtros">
-        {/* Búsqueda */}
         <div className="biblioteca-search-wrap">
           <svg className="biblioteca-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -129,7 +202,6 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
           )}
         </div>
 
-        {/* Tabs de categoría */}
         <div className="biblioteca-cats" role="tablist" aria-label="Filtrar por categoría">
           <button
             role="tab"
@@ -157,7 +229,6 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
           })}
         </div>
 
-        {/* Fila secundaria: favoritos + etiquetas */}
         <div className="biblioteca-filtros-extra">
           <button
             className={`biblioteca-filter-chip ${filtroFavoritos ? 'biblioteca-filter-chip--active' : ''}`}
@@ -166,7 +237,6 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
           >
             ★ Solo favoritos
           </button>
-
           {etiquetasDisponibles.map((et) => (
             <button
               key={et}
@@ -180,12 +250,17 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
         </div>
       </div>
 
-      {/* ── Grid de libros — RF7 ── */}
+      {/* ── Book grid — RF7 ── */}
       {librosFiltrados.length === 0 ? (
         <EmptyState
           hayLibros={libros.length > 0}
           onAgregar={() => setMostrarFormulario(true)}
-          onLimpiar={() => { setFiltroCategoria('todas'); setFiltroFavoritos(false); setFiltroEtiqueta(''); setBusqueda(''); }}
+          onLimpiar={() => {
+            setFiltroCategoria('todas');
+            setFiltroFavoritos(false);
+            setFiltroEtiqueta('');
+            setBusqueda('');
+          }}
         />
       ) : (
         <div className="biblioteca-grid" role="list" aria-label="Libros en la biblioteca">
@@ -193,39 +268,53 @@ export function Biblioteca({ onSuccess, onError, filtroInicial = 'todas' }) {
             <div key={libro.id} role="listitem">
               <BookCard
                 libro={libro}
-                onVerDetalle={setLibroDetalle}
-                onEditar={setLibroEditar}
-                onEliminar={handleSolicitarEliminar}
-                onToggleFavorito={handleToggleFavorito}
-                onCambiarCategoria={handleCambiarCategoria}
+                onVerDetalle={selectionMode ? undefined : setLibroDetalle}
+                onEditar={selectionMode ? undefined : setLibroEditar}
+                onEliminar={selectionMode ? undefined : handleSolicitarEliminar}
+                onToggleFavorito={selectionMode ? undefined : handleToggleFavorito}
+                onCambiarCategoria={selectionMode ? undefined : handleCambiarCategoria}
+                selectionMode={selectionMode}
+                isSelected={selectedIds.has(libro.id)}
+                onToggleSelect={toggleSelect}
               />
             </div>
           ))}
         </div>
       )}
 
-      {/* ── Modal detalle — RF9 ── */}
+      {/* ── Detail modal — RF9 ── */}
       {libroDetalle && (
         <BookDetailModal
           libro={libroDetalle}
           onCerrar={() => setLibroDetalle(null)}
           onEditar={(l) => { setLibroDetalle(null); setLibroEditar(l); }}
           onEliminar={(l) => { setLibroDetalle(null); handleSolicitarEliminar(l); }}
-          onToggleFavorito={async (l) => { await handleToggleFavorito(l); setLibroDetalle((prev) => ({ ...prev, favorito: !prev.favorito })); }}
-          onCambiarCategoria={(l, cat) => { handleCambiarCategoria(l, cat); }}
+          onToggleFavorito={async (l) => { await handleToggleFavorito(l); setLibroDetalle((p) => ({ ...p, favorito: !p.favorito })); }}
+          onCambiarCategoria={handleCambiarCategoria}
           onSuccess={onSuccess}
           onError={onError}
         />
       )}
 
-      {/* ── Confirm eliminar — RF22 ── */}
+      {/* ── Single delete confirm — RF22 ── */}
       {libroParaEliminar && (
-        <ConfirmDialog
-          titulo="¿Eliminar este libro?"
-          mensaje={`"${libroParaEliminar.titulo}" y todas sus notas asociadas serán eliminados permanentemente.`}
-          labelOk="Sí, eliminar"
+        <DeleteConfirmDialog
+          bookIds={[libroParaEliminar.id]}
+          bookTitle={libroParaEliminar.titulo}
           onConfirm={handleConfirmarEliminar}
           onCancel={handleCancelarEliminar}
+        />
+      )}
+
+      {/* ── Bulk delete confirm — RF22, RF23 ── */}
+      {bulkIdsToDelete.length > 0 && (
+        <DeleteConfirmDialog
+          bookIds={bulkIdsToDelete}
+          onConfirm={async () => {
+            await handleConfirmarBulkDelete();
+            exitSelectionMode();
+          }}
+          onCancel={handleCancelarBulkDelete}
         />
       )}
     </div>

@@ -4,6 +4,7 @@ import db from '../../db/db';
 import { BookCard } from '../Books/BookCard';
 import { BookForm, CATEGORIAS } from '../Books/BookForm';
 import { ConfirmDialog } from '../UI/ConfirmDialog';
+import { DeleteConfirmDialog } from '../UI/DeleteConfirmDialog';
 import { BookDetailModal } from '../UI/BookDetailModal';
 import { useLibroActions } from '../../hooks/useLibroActions';
 import './Dashboard.css';
@@ -191,10 +192,9 @@ export function Dashboard({ nombreUsuario, onAddBook, onIrBiblioteca }) {
       )}
 
       {libroParaEliminar && (
-        <ConfirmDialog
-          titulo="¿Eliminar este libro?"
-          mensaje={`"${libroParaEliminar.titulo}" y todas sus notas serán eliminados permanentemente.`}
-          labelOk="Sí, eliminar"
+        <DeleteConfirmDialog
+          bookIds={[libroParaEliminar.id]}
+          bookTitle={libroParaEliminar.titulo}
           onConfirm={handleConfirmarEliminar}
           onCancel={handleCancelarEliminar}
         />

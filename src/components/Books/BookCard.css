@@ -258,6 +258,63 @@
   text-overflow: ellipsis;
 }
 
+/* ── Selection mode ── */
+.book-card--selectable .book-card-cover {
+  cursor: pointer;
+}
+
+.book-card--selected .book-card-cover {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px 8px 8px 4px;
+}
+
+.book-card-select-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 20;
+  padding: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.book-card-select-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.85);
+  border-radius: 4px;
+  background: rgba(15, 10, 5, 0.5);
+  backdrop-filter: blur(3px);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.book-card-select-btn:hover .book-card-select-check {
+  border-color: var(--accent-primary);
+  background: rgba(139, 69, 19, 0.3);
+}
+
+.book-card-select-check--active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.book-card-select-check--active::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(45deg) translate(-1px, -1px);
+  margin-top: -2px;
+}
+
 /* ── CTA buttons ── */
 .book-card-cta {
   width: 100%;
