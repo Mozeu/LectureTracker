@@ -4,7 +4,7 @@ import db from '../../db/db';
 import { CATEGORIAS } from '../Books/BookForm';
 import { PanelNotas } from '../Notes/PanelNotas';
 import { ActualizadorProgreso } from '../Books/ActualizadorProgreso';
-import { exportarLibro } from '../../utils/exportLibro';
+import { exportBook } from '../../utils/exportImport';
 import './BookDetailModal.css';
 
 /**
@@ -51,7 +51,7 @@ export function BookDetailModal({
   const handleExportar = useCallback(async () => {
     setExportando(true);
     try {
-      const nombre = await exportarLibro(libro.id);
+      const nombre = await exportBook(libro.id);
       onSuccess?.(`Exportado como ${nombre}`);
     } catch (e) {
       onError?.(e.message ?? 'Error al exportar.');

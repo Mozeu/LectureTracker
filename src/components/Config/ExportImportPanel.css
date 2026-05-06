@@ -1,0 +1,291 @@
+.eip-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* ── Section wrapper ── */
+.eip-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.eip-section-title {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Export cards ── */
+.eip-export-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.eip-export-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.eip-export-card--note {
+  background: var(--bg-secondary);
+  opacity: 0.8;
+}
+
+.eip-export-card-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.eip-export-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.eip-export-card-name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.eip-export-card-desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ── Drop zone ── */
+.eip-drop {
+  border: 2px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.eip-drop:hover,
+.eip-drop--over {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 4%, var(--bg-card));
+}
+
+.eip-drop-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.eip-drop-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.eip-drop-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Error — RF28 ── */
+.eip-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(192, 57, 43, 0.06);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-left: 3px solid #c0392b;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+}
+
+.eip-error-title {
+  font-weight: 600;
+  color: #c0392b;
+  margin-bottom: 2px;
+}
+
+.eip-error-desc {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── Preview ── */
+.eip-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  animation: previewIn 200ms ease forwards;
+}
+
+@keyframes previewIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.eip-preview-file {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: 1.5rem;
+}
+
+.eip-preview-filename {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+}
+
+.eip-preview-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── Strategy selector ── */
+.eip-strategy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.eip-strategy-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.eip-strategy-opts {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.eip-strategy-opt {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.eip-strategy-opt:hover {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 4%, transparent);
+}
+
+.eip-strategy-opt--active {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+}
+
+.eip-strategy-opt--danger.eip-strategy-opt--active {
+  border-color: #c0392b;
+  background: rgba(192, 57, 43, 0.06);
+}
+
+.eip-strategy-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.eip-strategy-name {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.eip-strategy-desc {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.eip-danger-warning {
+  font-size: 0.8375rem;
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.06);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+.eip-preview-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-light);
+}
+
+/* ── Done state ── */
+.eip-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  text-align: center;
+  background: color-mix(in srgb, var(--cat-finished) 6%, var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--cat-finished) 20%, transparent);
+  border-radius: var(--radius-lg);
+}
+
+.eip-done-icon { font-size: 2.5rem; line-height: 1; }
+
+.eip-done-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--cat-finished);
+}
+
+.eip-done-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .eip-export-card {
+    flex-wrap: wrap;
+  }
+  .eip-strategy-opts {
+    flex-direction: column;
+  }
+  .eip-strategy-opt {
+    min-width: unset;
+  }
+}

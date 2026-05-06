@@ -8,6 +8,7 @@ import { Dashboard } from './components/Layout/Dashboard';
 import { Biblioteca } from './components/Books/Biblioteca';
 import { GestionEtiquetas } from './components/Tags/GestionEtiquetas';
 import { GestionColecciones } from './components/Tags/GestionColecciones';
+import { Configuracion } from './components/Config/Configuracion';
 import { ToastContainer } from './components/UI/Toast';
 import './styles/global.css';
 
@@ -215,7 +216,19 @@ export default function App() {
               />
             )}
 
-            {!['dashboard', 'biblioteca', 'etiquetas', 'colecciones'].includes(vista) && (
+            {vista === 'configuracion' && (
+              <Configuracion
+                nombreUsuario={nombreUsuario}
+                theme={theme}
+                onToggleTheme={toggleTheme}
+                onCambiarNombre={handleCambiarNombre}
+                onSuccess={(msg) => success(msg ?? '¡Hecho!')}
+                onError={(msg) => toastError(msg ?? 'Error')}
+                onResetComplete={() => setVista('dashboard')}
+              />
+            )}
+
+            {!['dashboard', 'biblioteca', 'etiquetas', 'colecciones', 'configuracion'].includes(vista) && (
               <div style={{ color: 'var(--text-secondary)', textAlign: 'center', paddingTop: '80px' }}>
                 <p style={{ fontSize: '3rem', marginBottom: '16px' }}>🚧</p>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', marginBottom: '8px' }}>
