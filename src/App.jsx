@@ -186,7 +186,9 @@ export default function App() {
               <Dashboard
                 nombreUsuario={nombreUsuario}
                 onAddBook={handleAddBook}
-                onIrBiblioteca={() => navegarBiblioteca()}
+                onNavegar={handleNavegar}
+                theme={theme}
+                onToggleTheme={toggleTheme}
               />
             )}
 

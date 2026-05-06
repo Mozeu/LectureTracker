@@ -329,10 +329,159 @@
   max-width: 320px;
 }
 
+/* ── Theme toggle button on dashboard — RF24 ── */
+.dashboard-theme-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-medium);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.dashboard-theme-btn:hover {
+  background: var(--bg-card);
+  transform: rotate(15deg);
+}
+
+/* ── Quick nav — RF25 ── */
+.dashboard-quicknav-title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dashboard-quicknav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.quicknav-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--qn-accent, var(--accent-primary));
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
+  font-family: var(--font-body);
+}
+
+.quicknav-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-left-color: var(--qn-accent, var(--accent-primary));
+  border-color: var(--border-medium);
+  border-left-color: var(--qn-accent, var(--accent-primary));
+}
+
+.quicknav-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.quicknav-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quicknav-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.quicknav-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quicknav-arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.quicknav-card:hover .quicknav-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Shelf "more" pill ── */
+.dashboard-shelf-more {
+  width: 130px;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px 8px 8px 4px;
+  border: 2px dashed var(--border-medium);
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+  font-family: var(--font-body);
+  align-self: flex-start;
+}
+
+.dashboard-shelf-more:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--bg-card);
+}
+
+.dashboard-shelf-more span:first-child {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.dashboard-shelf-more-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+/* ── Progress row: last read date ── */
+.progress-row-ultima {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
 /* ── Responsive ── */
-@media (max-width: 768px) {
-  .dashboard-stats {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 640px) {
+  .dashboard-quicknav {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .dashboard-quicknav {
+    grid-template-columns: 1fr;
   }
 }
 
