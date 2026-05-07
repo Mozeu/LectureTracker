@@ -183,6 +183,185 @@
   line-height: 1.4;
 }
 
+/* ── Storage quota — RNF7 ── */
+.config-card--storage {
+  gap: var(--space-md);
+}
+
+.config-card--warning {
+  border-color: rgba(212, 168, 71, 0.4);
+  background: color-mix(in srgb, var(--accent-gold) 3%, var(--bg-card));
+}
+
+.config-card--critical {
+  border-color: rgba(192, 57, 43, 0.3);
+  background: rgba(192, 57, 43, 0.03);
+}
+
+.config-storage-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.config-storage-labels {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.config-storage-used {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.config-storage-total {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.config-storage-pct {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.config-storage-bar {
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.config-storage-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-warm));
+  transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 2px;
+}
+
+.config-card--warning  .config-storage-bar-fill { background: var(--accent-gold); }
+.config-card--critical .config-storage-bar-fill { background: #c0392b; }
+
+.config-storage-alert {
+  font-size: 0.8375rem;
+  line-height: 1.5;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+}
+
+.config-storage-alert--warning {
+  background: color-mix(in srgb, var(--accent-gold) 10%, transparent);
+  color: color-mix(in srgb, var(--accent-gold) 80%, var(--text-primary));
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 25%, transparent);
+}
+
+.config-storage-alert--critical {
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+  border: 1px solid rgba(192, 57, 43, 0.2);
+}
+
+.config-storage-refresh {
+  align-self: flex-start;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* ── About section ── */
+.config-card--about {
+  gap: var(--space-lg);
+}
+
+.config-about-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.config-about-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.config-about-name {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.config-about-version {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.config-about-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.config-about-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.config-about-stat-emoji {
+  font-size: 1.1rem;
+}
+
+.config-about-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+.config-about-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.config-about-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.config-about-links {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.config-about-link {
+  font-size: 0.8375rem;
+  color: var(--accent-reading);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.config-about-link:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
 /* ── Responsive ── */
 @media (max-width: 520px) {
   .config-row {
@@ -192,5 +371,11 @@
 
   .config-format-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .config-about-stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

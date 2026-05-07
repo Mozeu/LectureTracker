@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getConfig, setConfig } from './db/db';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
+import { useStorageQuota } from './hooks/useStorageQuota';
 import { WelcomeSetup } from './components/Setup/WelcomeSetup';
 import { Sidebar } from './components/Layout/Sidebar';
 import { Dashboard } from './components/Layout/Dashboard';
@@ -28,6 +29,7 @@ export default function App() {
 
   const { theme, toggleTheme } = useTheme();
   const { toasts, success, error: toastError } = useToast();
+  const storageQuota = useStorageQuota();
 
   /* ── Verificar si ya hay nombre guardado (RF1) ── */
   useEffect(() => {
@@ -181,7 +183,24 @@ export default function App() {
             <span className="mobile-header-title">📚 Librería Personal</span>
           </header>
 
-          {/* Vistas */}
+          {/* Critical storage warning — RNF7 */}
+        {storageQuota.isCritical && (
+          <div className="app-storage-warning" role="alert">
+            <span aria-hidden="true">⚠️</span>
+            <span>
+              Almacenamiento casi lleno ({storageQuota.percentage}% usado).
+              <button
+                className="app-storage-warning-link"
+                onClick={() => handleNavegar('configuracion')}
+              >
+                Exporta un backup
+              </button>
+              para evitar perder datos.
+            </span>
+          </div>
+        )}
+
+        {/* Vistas */}
           <div className="page-content">
             {vista === 'dashboard' && (
               <Dashboard

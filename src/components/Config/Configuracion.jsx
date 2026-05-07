@@ -1,9 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { getConfig, setConfig } from '../../db/db';
 import db from '../../db/db';
 import { ExportImportPanel } from './ExportImportPanel';
 import { ConfirmDialog } from '../UI/ConfirmDialog';
+import { useStorageQuota } from '../../hooks/useStorageQuota';
 import './Configuracion.css';
+
+/* ── AboutStat sub-component ── */
+function AboutStat({ emoji, value, label }) {
+  return (
+    <div className="config-about-stat">
+      <span className="config-about-stat-emoji" aria-hidden="true">{emoji}</span>
+      <span className="config-about-stat-value">{value ?? '—'}</span>
+      <span className="config-about-stat-label">{label}</span>
+    </div>
+  );
+}
 
 const PROGRESS_FORMATS = [
   { value: 'paginas',    label: 'Páginas',    desc: 'Seguimiento por número de página' },
@@ -45,6 +58,17 @@ export function Configuracion({
   const [resetting,    setResetting]          = useState(false);
 
   const inputRef = useRef(null);
+
+  // RNF7 — storage quota monitoring
+  const quota = useStorageQuota();
+
+  // Live DB counts for the About section
+  const dbStats = useLiveQuery(async () => ({
+    books:       await db.libros.count(),
+    notes:       await db.notas.count(),
+    tags:        await db.etiquetas.count(),
+    collections: await db.colecciones.count(),
+  }), []);
 
   // Load saved defaultProgressFormat
   useEffect(() => {
@@ -207,6 +231,102 @@ export function Configuracion({
         <h2 className="config-section-title">Exportar e importar</h2>
         <div className="config-card">
           <ExportImportPanel onSuccess={onSuccess} onError={onError} />
+        </div>
+      </section>
+
+      {/* ── Storage quota — RNF7 ── */}
+      {quota.supported && (
+        <section className="config-section">
+          <h2 className="config-section-title">Almacenamiento local</h2>
+          <div className={`config-card config-card--storage ${quota.isCritical ? 'config-card--critical' : quota.isWarning ? 'config-card--warning' : ''}`}>
+            <div className="config-storage-header">
+              <div className="config-storage-labels">
+                <span className="config-storage-used">
+                  {quota.usageLabel ?? '…'} usados
+                </span>
+                <span className="config-storage-total">
+                  de {quota.quotaLabel ?? '…'} disponibles
+                </span>
+              </div>
+              <span className="config-storage-pct" aria-live="polite">
+                {quota.percentage != null ? `${quota.percentage}%` : '—'}
+              </span>
+            </div>
+
+            {/* Progress bar */}
+            <div
+              className="config-storage-bar"
+              role="progressbar"
+              aria-valuenow={quota.percentage ?? 0}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Uso del almacenamiento local"
+            >
+              <div
+                className="config-storage-bar-fill"
+                style={{ width: `${Math.min(100, quota.percentage ?? 0)}%` }}
+              />
+            </div>
+
+            {/* Warning messages — RNF7 */}
+            {quota.isCritical && (
+              <p className="config-storage-alert config-storage-alert--critical" role="alert">
+                ⚠️ <strong>Almacenamiento casi lleno.</strong> Exporta un backup y elimina libros para liberar espacio.
+              </p>
+            )}
+            {quota.isWarning && !quota.isCritical && (
+              <p className="config-storage-alert config-storage-alert--warning" role="alert">
+                ⚠️ Estás usando más del 70% del almacenamiento disponible. Considera exportar un backup.
+              </p>
+            )}
+
+            <button
+              className="btn btn-ghost btn-sm config-storage-refresh"
+              onClick={quota.refresh}
+              aria-label="Actualizar información de almacenamiento"
+            >
+              ↻ Actualizar
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* ── About / stats ── */}
+      <section className="config-section">
+        <h2 className="config-section-title">Acerca de</h2>
+        <div className="config-card config-card--about">
+          <div className="config-about-header">
+            <span className="config-about-icon" aria-hidden="true">📚</span>
+            <div>
+              <p className="config-about-name">Librería Personal</p>
+              <p className="config-about-version">v1.0.0 — Módulos 1–11 completos</p>
+            </div>
+          </div>
+
+          {dbStats && (
+            <div className="config-about-stats">
+              <AboutStat emoji="📖" value={dbStats.books}       label="Libros" />
+              <AboutStat emoji="📝" value={dbStats.notes}       label="Notas" />
+              <AboutStat emoji="🏷️" value={dbStats.tags}        label="Etiquetas" />
+              <AboutStat emoji="📂" value={dbStats.collections} label="Colecciones" />
+            </div>
+          )}
+
+          <p className="config-about-desc">
+            Aplicación 100% local — sin servidores, sin cuentas, sin publicidad.
+            Todo tu datos viven en IndexedDB en tu navegador.
+          </p>
+
+          <div className="config-about-links">
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="config-about-link"
+            >
+              ↗ Ver código fuente
+            </a>
+          </div>
         </div>
       </section>
 

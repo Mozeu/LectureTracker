@@ -463,10 +463,41 @@ h1, h2, h3, h4, h5 {
   to   { transform: translateY(0) translateX(0); opacity: 1; }
 }
 
-/* =============================================
-   Responsive
-============================================= */
+/* ── Global storage warning banner — RNF7 ── */
+.app-storage-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px var(--space-xl);
+  background: rgba(192, 57, 43, 0.08);
+  border-bottom: 1px solid rgba(192, 57, 43, 0.2);
+  font-size: 0.8375rem;
+  color: #c0392b;
+  line-height: 1.5;
+  flex-wrap: wrap;
+}
+
+.app-storage-warning-link {
+  font-weight: 600;
+  text-decoration: underline;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0 4px;
+}
+
+.app-storage-warning-link:hover {
+  color: #a93226;
+}
+
 @media (max-width: 768px) {
+  .app-storage-warning {
+    padding: 10px var(--space-md);
+  }
+
   .page-content {
     padding: var(--space-md) var(--space-md);
   }
