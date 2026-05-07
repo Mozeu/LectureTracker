@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { crearLibro, actualizarLibro } from '../../db/db';
-import { IsbnSearchBar } from './IsbnSearchBar';
 import './BookForm.css';
 
 /* ─── Constantes ─────────────────────────────────── */
@@ -166,26 +165,6 @@ export function BookForm({ libro = null, onSuccess, onCancel }) {
     update('portadaUrl', '');
     if (fileInputRef.current) fileInputRef.current.value = '';
   }, [update]);
-
-  // RF34, RF35 — non-destructive autocomplete from ISBN search
-  // Only fills fields that are currently empty; user can override afterwards
-  const handleIsbnAutocomplete = useCallback((fields) => {
-    setForm((prev) => {
-      const next = { ...prev };
-      for (const [key, value] of Object.entries(fields)) {
-        if (key === '_generoSugerido') continue; // internal hint only
-        // Non-destructive: only fill if the current value is empty
-        const currentVal = prev[key];
-        const isEmpty = currentVal === '' || currentVal === null || currentVal === undefined;
-        if (isEmpty && value) {
-          next[key] = value;
-        }
-      }
-      // Clear errors for fields that just got filled
-      return next;
-    });
-    setErrors({});
-  }, []);
 
   /* ── Validación RF6 ── */
 
@@ -416,13 +395,21 @@ export function BookForm({ libro = null, onSuccess, onCancel }) {
                 <span className="form-hint">Separa varios autores con comas.</span>
               </div>
 
-              {/* ISBN + Buscar por ISBN — RF30–RF40 */}
-              <IsbnSearchBar
-                initialValue={form.isbn}
-                onIsbnChange={(value) => update('isbn', value)}
-                onAutocomplete={handleIsbnAutocomplete}
-                disabled={loading}
-              />
+              {/* ISBN */}
+              <div className="form-group">
+                <label htmlFor="isbn" className="form-label">ISBN</label>
+                <input
+                  id="isbn"
+                  name="isbn"
+                  type="text"
+                  className={`form-input ${errors.isbn ? 'form-input--error' : ''}`}
+                  value={form.isbn}
+                  onChange={handleChange}
+                  placeholder="978-XXXXXXXXXX"
+                  maxLength={20}
+                />
+                {errors.isbn && <p className="form-error">{errors.isbn}</p>}
+              </div>
 
               {/* Editorial y año */}
               <div className="form-row-2">
