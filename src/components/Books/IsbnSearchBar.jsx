@@ -13,14 +13,18 @@ import './IsbnSearchBar.css';
  *   disabled       — bool
  */
 export function IsbnSearchBar({ initialValue = '', onIsbnChange, onAutocomplete, disabled }) {
-  const [isbn,        setIsbn]        = useState(initialValue);
-  const [status,      setStatus]      = useState('idle');
+  const [isbn,            setIsbn]            = useState(initialValue);
+  const [status,          setStatus]          = useState('idle');
   // status: 'idle' | 'searching' | 'success' | 'error'
-  const [result,      setResult]      = useState(null);
-  const [errorMsg,    setErrorMsg]    = useState('');
-  const [coverStatus, setCoverStatus] = useState('idle');
+  const [result,          setResult]          = useState(null);
+  const [errorMsg,        setErrorMsg]        = useState('');
+  const [coverStatus,     setCoverStatus]     = useState('idle');
   // coverStatus: 'idle' | 'loading' | 'ready' | 'failed'
-  const [coverB64,    setCoverB64]    = useState(null);
+  const [coverB64,        setCoverB64]        = useState(null);
+  const [showDisclaimer,  setShowDisclaimer]  = useState(false);
+  const [dontShowAgain,   setDontShowAgain]   = useState(false);
+
+  const DISCLAIMER_KEY = 'isbn_disclaimer_dismissed';
 
   const inputRef   = useRef(null);
   const mountedRef = useRef(true);
@@ -44,17 +48,8 @@ export function IsbnSearchBar({ initialValue = '', onIsbnChange, onAutocomplete,
     if (status !== 'idle') reset();
   }, [status, onIsbnChange, reset]);
 
-  // ── Search — RF32, RF33 ────────────────────────────────────────────────────
-  const handleSearch = useCallback(async () => {
-    // RF31: validate before calling API
-    const fmtError = getISBNError(isbn);
-    if (fmtError) {
-      setErrorMsg(fmtError);
-      setStatus('error');
-      inputRef.current?.focus();
-      return;
-    }
-
+  // ── Actual API call (runs after disclaimer is accepted) ───────────────────
+  const runSearch = useCallback(async () => {
     setStatus('searching');
     setErrorMsg('');
     setResult(null);
@@ -83,10 +78,45 @@ export function IsbnSearchBar({ initialValue = '', onIsbnChange, onAutocomplete,
       setErrorMsg(
         err instanceof LookupError
           ? err.message
-          : 'Error de red. Comprueba tu conexión e inténtalo de nuevo.'  // RF37
+          : 'Error de red. Comprueba tu conexión e inténtalo de nuevo.'
       );
     }
   }, [isbn]);
+
+  // ── Search entry point — validates first, then shows disclaimer or searches ─
+  const handleSearch = useCallback(() => {
+    // RF31: validate format before anything else
+    const fmtError = getISBNError(isbn);
+    if (fmtError) {
+      setErrorMsg(fmtError);
+      setStatus('error');
+      inputRef.current?.focus();
+      return;
+    }
+
+    // Show disclaimer if user hasn't dismissed it permanently
+    if (!localStorage.getItem(DISCLAIMER_KEY)) {
+      setDontShowAgain(false);
+      setShowDisclaimer(true);
+      return;
+    }
+
+    // Disclaimer already dismissed — search directly
+    runSearch();
+  }, [isbn, runSearch]);
+
+  // ── Disclaimer handlers ───────────────────────────────────────────────────
+  const handleDisclaimerConfirm = useCallback(() => {
+    if (dontShowAgain) {
+      localStorage.setItem(DISCLAIMER_KEY, '1');
+    }
+    setShowDisclaimer(false);
+    runSearch();
+  }, [dontShowAgain, runSearch]);
+
+  const handleDisclaimerClose = useCallback(() => {
+    setShowDisclaimer(false);
+  }, []);
 
   const handleKeyDown = (e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } };
 
@@ -278,6 +308,114 @@ export function IsbnSearchBar({ initialValue = '', onIsbnChange, onAutocomplete,
         </a>
         {' '}· Petición directa desde tu navegador, sin intermediarios.
       </p>
+
+      {/* Disclaimer modal — appears on first search */}
+      {showDisclaimer && (
+        <ISBNDisclaimerModal
+          dontShowAgain={dontShowAgain}
+          onToggleDontShow={() => setDontShowAgain((v) => !v)}
+          onConfirm={handleDisclaimerConfirm}
+          onClose={handleDisclaimerClose}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ── ISBNDisclaimerModal ─────────────────────────────────────────────────────
+   Shown once before the first ISBN search.
+   "No volver a mostrar" persists the dismissal in localStorage.
+────────────────────────────────────────────────────────────────────────────── */
+function ISBNDisclaimerModal({ dontShowAgain, onToggleDontShow, onConfirm, onClose }) {
+  const confirmRef = useRef(null);
+
+  // Focus the confirm button when the modal opens
+  useEffect(() => {
+    confirmRef.current?.focus();
+  }, []);
+
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  return (
+    <div
+      className="isbn-disclaimer-backdrop"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="disclaimer-title"
+    >
+      <div className="isbn-disclaimer-modal">
+        {/* Icon + title */}
+        <div className="isbn-disclaimer-header">
+          <span className="isbn-disclaimer-icon" aria-hidden="true">📋</span>
+          <h3 id="disclaimer-title" className="isbn-disclaimer-title">
+            Antes de buscar por ISBN
+          </h3>
+        </div>
+
+        {/* Limitation bullets */}
+        <ul className="isbn-disclaimer-list" aria-label="Limitaciones de la búsqueda">
+          <li>
+            <span className="isbn-disclaimer-bullet" aria-hidden="true">📦</span>
+            <span>
+              <strong>Solo datos básicos.</strong> La búsqueda devuelve información
+              general de la obra: título, autores, editorial, año y páginas.
+              Sinopsis y otros detalles no siempre están disponibles.
+            </span>
+          </li>
+          <li>
+            <span className="isbn-disclaimer-bullet" aria-hidden="true">🕰️</span>
+            <span>
+              <strong>Base de datos desactualizada.</strong> Open Library es una
+              base de datos colaborativa que puede no incluir obras recientes o
+              ediciones nuevas.
+            </span>
+          </li>
+          <li>
+            <span className="isbn-disclaimer-bullet" aria-hidden="true">⚠️</span>
+            <span>
+              <strong>La información puede ser incorrecta.</strong> Al ser
+              colaborativa, algunos campos pueden tener errores o estar incompletos.
+              Revisa los datos antes de guardar.
+            </span>
+          </li>
+        </ul>
+
+        {/* Don't show again */}
+        <label className="isbn-disclaimer-check-row">
+          <input
+            type="checkbox"
+            checked={dontShowAgain}
+            onChange={onToggleDontShow}
+            className="isbn-disclaimer-checkbox"
+          />
+          <span>No volver a mostrar este aviso</span>
+        </label>
+
+        {/* Actions */}
+        <div className="isbn-disclaimer-actions">
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={onClose}
+          >
+            Cancelar
+          </button>
+          <button
+            ref={confirmRef}
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={onConfirm}
+          >
+            Entendido, buscar
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

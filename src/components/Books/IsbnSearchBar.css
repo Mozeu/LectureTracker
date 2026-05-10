@@ -300,3 +300,145 @@
   .isbn-card-actions { width: 100%; }
   .isbn-card-actions .btn { flex: 1; justify-content: center; }
 }
+
+/* ============================================================
+   ISBN Disclaimer Modal
+   ============================================================ */
+.isbn-disclaimer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(4px);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  animation: isbnFadeIn 180ms ease forwards;
+}
+
+@keyframes isbnFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.isbn-disclaimer-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  animation: isbnSlideIn 220ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes isbnSlideIn {
+  from { transform: scale(0.96) translateY(8px); opacity: 0; }
+  to   { transform: scale(1)    translateY(0);   opacity: 1; }
+}
+
+/* ── Header ── */
+.isbn-disclaimer-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.isbn-disclaimer-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.isbn-disclaimer-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* ── Limitation list ── */
+.isbn-disclaimer-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.isbn-disclaimer-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.isbn-disclaimer-bullet {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.isbn-disclaimer-list strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── Checkbox row ── */
+.isbn-disclaimer-check-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.isbn-disclaimer-check-row:hover {
+  background: var(--bg-tertiary);
+}
+
+.isbn-disclaimer-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Actions ── */
+.isbn-disclaimer-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .isbn-disclaimer-modal {
+    padding: var(--space-lg);
+  }
+
+  .isbn-disclaimer-actions {
+    flex-direction: column-reverse;
+  }
+
+  .isbn-disclaimer-actions .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+}
