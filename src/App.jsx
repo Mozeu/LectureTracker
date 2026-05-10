@@ -283,10 +283,15 @@ export default function App() {
         }
 
         .mobile-menu-btn {
-          padding: 6px;
+          padding: 10px;
+          min-width: 44px;
+          min-height: 44px;
           border-radius: var(--radius-md);
           color: var(--text-secondary);
           transition: background var(--transition-fast);
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .mobile-menu-btn:hover {

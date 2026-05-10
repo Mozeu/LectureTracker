@@ -152,11 +152,19 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  touch-action: manipulation; /* RF55: prevent double-tap zoom on buttons */
 }
 
 input, textarea, select {
   font-family: inherit;
   font-size: inherit;
+}
+
+/* RF55: prevent iOS Safari from auto-zooming on focus when font-size < 16px */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: max(1rem, 16px);
+  }
 }
 
 a {
@@ -506,3 +514,4 @@ h1, h2, h3, h4, h5 {
     --sidebar-width: 0px;
   }
 }
+

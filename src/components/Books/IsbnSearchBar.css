@@ -1,0 +1,302 @@
+.isbn-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* ── Label row ── */
+.isbn-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.isbn-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+/* ── Input + button row — RF30 ── */
+.isbn-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.isbn-input {
+  flex: 1;
+}
+
+.isbn-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* RF33: spinner */
+.isbn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-medium);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: isbnSpin 600ms linear infinite;
+  flex-shrink: 0;
+}
+
+.isbn-spinner--sm {
+  width: 18px;
+  height: 18px;
+}
+
+@keyframes isbnSpin { to { transform: rotate(360deg); } }
+
+/* ── Error — RF31, RF36, RF37 ── */
+.isbn-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: 10px 14px;
+  background: rgba(192, 57, 43, 0.06);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-left: 3px solid #c0392b;
+  border-radius: var(--radius-md);
+  font-size: 0.8375rem;
+  color: #c0392b;
+  line-height: 1.4;
+}
+
+.isbn-retry-btn {
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(192, 57, 43, 0.4);
+  background: none;
+  color: #c0392b;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.isbn-retry-btn:hover {
+  background: rgba(192, 57, 43, 0.1);
+}
+
+/* ── Result card — RF34 ── */
+.isbn-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  animation: isbnCardIn 200ms ease forwards;
+}
+
+@keyframes isbnCardIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card head */
+.isbn-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--cat-finished) 6%, var(--bg-secondary));
+  border-bottom: 1px solid var(--border-light);
+}
+
+.isbn-found-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--cat-finished);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.isbn-dismiss {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+  font-family: inherit;
+}
+
+.isbn-dismiss:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+
+/* Card body */
+.isbn-card-body {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  align-items: flex-start;
+}
+
+/* RF38: cover area */
+.isbn-cover-wrap {
+  width: 70px;
+  height: 100px;
+  border-radius: 3px 6px 6px 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-tertiary);
+  box-shadow: 2px 3px 10px rgba(30,20,10,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.isbn-cover-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.isbn-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.isbn-cover-empty {
+  font-size: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-muted);
+}
+
+/* Info */
+.isbn-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.isbn-card-title {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.isbn-card-authors {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.isbn-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.isbn-card-meta span {
+  font-size: 0.75rem;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.isbn-card-lang {
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent) !important;
+  color: var(--accent-primary) !important;
+  font-weight: 600;
+}
+
+.isbn-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.isbn-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.isbn-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+  color: var(--accent-primary);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 20%, transparent);
+}
+
+.isbn-cover-msg {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.isbn-cover-msg--warn { color: var(--accent-warm); }
+
+/* Card footer — RF35, RF39 */
+.isbn-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.isbn-editable-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.isbn-card-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* RF40: attribution */
+.isbn-attribution {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.isbn-attribution a {
+  color: var(--accent-reading);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .isbn-row { flex-direction: column; }
+  .isbn-btn { width: 100%; justify-content: center; }
+  .isbn-card-body { flex-direction: column; }
+  .isbn-cover-wrap { width: 90px; height: 128px; margin: 0 auto; }
+  .isbn-card-foot { flex-direction: column; align-items: flex-start; }
+  .isbn-card-actions { width: 100%; }
+  .isbn-card-actions .btn { flex: 1; justify-content: center; }
+}

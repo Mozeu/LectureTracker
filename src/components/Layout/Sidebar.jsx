@@ -7,7 +7,7 @@ import './Sidebar.css';
  * Sidebar — Módulo 4 (RF10, RF11, RF24)
  * onNavegar(vista, filtro?) — filtro opcional para deep-link en Biblioteca
  */
-export function Sidebar({ vista, filtro, onNavegar, nombreUsuario, theme, onToggleTheme, onMobileClose }) {
+export function Sidebar({ vista, filtro, onNavegar, nombreUsuario, theme, onToggleTheme, onMobileClose, className = '' }) {
   // Conteos reactivos para badges — RF10, RF11
   const conteos = useLiveQuery(async () => {
     const libros = await db.libros.toArray();
@@ -29,7 +29,7 @@ export function Sidebar({ vista, filtro, onNavegar, nombreUsuario, theme, onTogg
   };
 
   return (
-    <aside className="sidebar" aria-label="Navegación principal">
+    <aside className={`sidebar ${className}`} aria-label="Navegación principal">
       {/* Logo */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon" aria-hidden="true">📚</div>

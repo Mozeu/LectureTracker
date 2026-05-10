@@ -1,0 +1,516 @@
+/**
+ * mobile.css — Module 14 (RF53–RF56)
+ * Imported LAST — overrides component styles for touch/mobile.
+ *
+ * Three media query groups:
+ *   (hover: none)          — touch-only devices (iOS, Android): fix hover-hidden elements
+ *   (pointer: coarse)      — finger-size pointers: enforce 44px min touch targets (RF55)
+ *   max-width: 768px / 480px — layout breakpoints (RF53)
+ */
+
+/* ============================================================
+   1. TOUCH DEVICES — make hover-hidden elements always visible
+   RF54: replace :hover-only visibility with :active fallback
+   ============================================================ */
+@media (hover: none) {
+
+  /* ── BookCard: action overlay ── */
+  .book-card-actions {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+
+  /* ── BookCard: CTA buttons (Empezar / Terminado) ── */
+  .book-card-cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── BookCard: lift animation on tap instead of hover ── */
+  .book-card-cover:active {
+    transform: translateY(-3px) scale(1.02);
+  }
+
+  /* Remove the hover lift so it doesn't flicker on touch */
+  .book-card:hover .book-card-cover {
+    transform: none;
+    box-shadow: var(--shadow-book);
+  }
+
+  /* ── NotaCard: action buttons ── */
+  .nota-card-actions {
+    opacity: 1;
+  }
+
+  /* ── Dashboard: quick-nav arrow ── */
+  .quicknav-arrow {
+    opacity: 0.5;
+    transform: translateX(0);
+  }
+
+  /* ── Sidebar sub-items: always show dot at full opacity ── */
+  .sidebar-sub-dot {
+    opacity: 1;
+  }
+
+  /* ── Progress row: full opacity without hover ── */
+  .progress-row:hover {
+    box-shadow: none;
+    background: var(--bg-card);
+  }
+
+  .progress-row:active {
+    background: var(--bg-card-hover);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── Collection chips in GestionColecciones ── */
+  .gc-libro-quitar {
+    opacity: 0.7;
+  }
+
+  /* ── stat cards: no lift on hover ── */
+  .dashboard-stat-card:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .dashboard-stat-card:active {
+    transform: scale(0.97);
+  }
+
+  /* ── Quick-nav cards ── */
+  .quicknav-card:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .quicknav-card:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── Buttons: use :active instead of :hover transforms ── */
+  .btn:hover {
+    transform: none;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn-primary:active {
+    background: var(--accent-warm);
+  }
+
+  /* ── Welcome setup button ── */
+  .welcome-btn:hover {
+    transform: none;
+  }
+
+  .welcome-btn:active {
+    transform: scale(0.98);
+    background: var(--accent-warm);
+  }
+
+  /* ── EIP drop zone ── */
+  .eip-drop:hover {
+    border-color: var(--border-medium);
+    background: var(--bg-secondary);
+  }
+
+  .eip-drop:active {
+    border-color: var(--accent-primary);
+    background: color-mix(in srgb, var(--accent-primary) 4%, var(--bg-card));
+  }
+}
+
+/* ============================================================
+   2. COARSE POINTER (FINGER) — min 44×44px touch targets (RF55)
+   ============================================================ */
+@media (pointer: coarse) {
+
+  /* ── Global button floor ── */
+  .btn {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .btn-sm {
+    min-height: 40px;
+    padding: 8px 16px;
+  }
+
+  /* ── BookCard action buttons (were 28px) ── */
+  .book-card-action-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  /* ── BookCard selection checkbox (was 20px check area) ── */
+  .book-card-select-btn {
+    width: 44px;
+    height: 44px;
+    top: 0;
+    left: 0;
+  }
+
+  /* ── Sidebar nav items ── */
+  .sidebar-nav-item {
+    min-height: 44px;
+    padding: 10px var(--space-md);
+  }
+
+  .sidebar-sub-item {
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  /* ── Form inputs: larger for fat fingers ── */
+  .form-input,
+  .form-select,
+  .form-textarea {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 1rem; /* prevent iOS auto-zoom on <16px */
+  }
+
+  /* ── Nota card action buttons ── */
+  .nota-card-btn {
+    padding: 10px 16px;
+    min-height: 40px;
+  }
+
+  /* ── Tag/collection management buttons ── */
+  .ge-card-btn,
+  .gc-expand-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* ── ISBN search button ── */
+  .isbn-btn {
+    min-height: 44px;
+  }
+
+  /* ── Dismiss buttons ── */
+  .isbn-dismiss,
+  .detail-close,
+  .book-form-close,
+  .isbn-dismiss {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* ── Tabs ── */
+  .book-form-tab,
+  .biblioteca-cat-tab {
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+
+  /* ── Theme toggle in sidebar ── */
+  .sidebar-theme-toggle {
+    min-height: 44px;
+  }
+
+  /* ── Hamburger menu button ── */
+  .mobile-menu-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ============================================================
+   3. LAYOUT BREAKPOINTS — RF53 responsive grid/layout
+   ============================================================ */
+
+/* ── 768px: tablet / large mobile ── */
+@media (max-width: 768px) {
+
+  /* Sidebar: always hidden behind hamburger — RF56 */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 200;
+    width: min(280px, 85vw);
+    height: 100dvh;
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
+    box-shadow: var(--shadow-lg);
+    overflow-y: auto;
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+  }
+
+  /* Mobile header visible */
+  .mobile-header {
+    display: flex;
+  }
+
+  /* Page content: reduce padding */
+  .page-content {
+    padding: var(--space-md);
+  }
+
+  /* Dashboard stats: 2 columns */
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Shelf: allow cards to wrap more naturally */
+  .dashboard-shelf {
+    gap: var(--space-md) var(--space-sm);
+  }
+
+  /* Quick nav: 2 columns */
+  .dashboard-quicknav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Biblioteca filter: wrap chips */
+  .biblioteca-cats {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: var(--space-xs);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* BookForm: single column grid in básico tab */
+  .book-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* BookDetailModal: slide up from bottom */
+  .detail-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .detail-modal {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-height: 90dvh;
+    overflow-y: auto;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .detail-header {
+    grid-template-columns: 120px 1fr;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+  }
+}
+
+/* ── 480px: small mobile ── */
+@media (max-width: 480px) {
+
+  /* BookCard: smaller but consistent width */
+  .book-card {
+    width: 110px;
+  }
+
+  /* Library grid: tighter */
+  .biblioteca-grid {
+    gap: var(--space-lg) var(--space-sm);
+  }
+
+  /* Dashboard stats: still 2 columns but smaller */
+  .dashboard-stats {
+    gap: var(--space-sm);
+  }
+
+  .dashboard-stat-count {
+    font-size: 1.5rem;
+  }
+
+  /* Quick nav: single column */
+  .dashboard-quicknav {
+    grid-template-columns: 1fr;
+  }
+
+  /* Section headers: stack on narrow */
+  .dashboard-section-header {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  /* Shelf more pill */
+  .dashboard-shelf-more {
+    width: 110px;
+  }
+
+  /* Bulk bar: stack on narrow */
+  .biblioteca-bulk-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .biblioteca-bulk-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Config format grid: 1 column */
+  .config-format-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* EIP strategy: stack */
+  .eip-strategy-opts {
+    flex-direction: column;
+  }
+
+  /* Notes form meta: stack */
+  .form-nota-meta {
+    flex-direction: column;
+  }
+
+  .form-nota-pagina {
+    width: 100%;
+  }
+
+  /* Progress row: more compact */
+  .progress-row {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* BookForm cover placeholder: smaller */
+  .cover-preview-wrapper {
+    max-width: 140px;
+    margin: 0 auto;
+  }
+
+  /* Reduce heading sizes */
+  .biblioteca-title,
+  .gc-title,
+  .ge-title,
+  .config-title {
+    font-size: 1.75rem;
+  }
+
+  /* Dashboard welcome: stack */
+  .dashboard-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* WelcomeSetup card: no border radius on very small */
+  .welcome-card {
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  /* ISBN search: stack button below input */
+  .isbn-row {
+    flex-direction: column;
+  }
+
+  .isbn-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Form rows: single column */
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   4. HOVER GUARD — RF54
+   Wrap :hover only where devices with mouse are present.
+   Critical hover effects (that change layout/visibility significantly)
+   are neutralized above via (hover:none). Here we explicitly
+   ALLOW the desktop-only decorative hovers.
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+
+  /* Desktop-only: book card lift on hover */
+  .book-card:hover .book-card-cover {
+    transform: translateY(-4px) rotate(-1deg);
+    box-shadow: 6px 12px 24px rgba(30, 20, 10, 0.25), 3px 5px 8px rgba(30, 20, 10, 0.15);
+  }
+
+  /* Desktop-only: show actions overlay on hover */
+  .book-card:hover .book-card-actions,
+  .book-card:focus-within .book-card-actions {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+
+  /* Desktop-only: stat card lift */
+  .dashboard-stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  /* Desktop-only: quick nav card lift */
+  .quicknav-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .quicknav-card:hover .quicknav-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Desktop-only: btn lift */
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Desktop-only: welcome btn hover */
+  .welcome-btn:hover:not(:disabled) {
+    background: var(--accent-warm);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(139, 69, 19, 0.35);
+  }
+
+  /* Desktop-only: nota card actions on hover */
+  .nota-card:hover .nota-card-actions {
+    opacity: 1;
+  }
+
+  /* Desktop-only: collection book quitar */
+  .gc-libro-chip:hover .gc-libro-quitar {
+    opacity: 1;
+  }
+
+  /* Desktop-only: eip drop hover */
+  .eip-drop:hover {
+    border-color: var(--accent-primary);
+    background: color-mix(in srgb, var(--accent-primary) 4%, var(--bg-card));
+  }
+}
+
+/* ============================================================
+   5. iOS SPECIFIC — prevent content jump on scroll
+   ============================================================ */
+@supports (-webkit-touch-callout: none) {
+  /* iOS: use dvh for reliable full-height */
+  .welcome-overlay,
+  .sidebar,
+  .detail-backdrop,
+  .confirm-backdrop,
+  .dcd-backdrop {
+    height: -webkit-fill-available;
+  }
+
+  /* iOS: prevent double-tap zoom on buttons */
+  .btn,
+  .sidebar-nav-item,
+  .book-card {
+    touch-action: manipulation;
+  }
+}
